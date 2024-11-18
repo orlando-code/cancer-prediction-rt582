@@ -11,17 +11,17 @@ st.set_page_config(page_title='Cancer Diagnosis Prediction', layout='wide')
 
 MODELS_DIR = 'models'
 
-def list_saved_models(directory):
+def list_saved_models(directory: str):
     """List all '.pkl' files in the given directory."""
     return [file for file in os.listdir(directory) if file.endswith('.pkl')]
 
 @st.cache_resource
-def load_model(path='cancer_model.pkl'):
+def load_model(path:str='cancer_model.pkl'):
     model = CancerModel()
     model.load(path)
     return model
 
-def train_and_save_model(train_data, filename='cancer_model.pkl'):
+def train_and_save_model(train_data:pd.DataFrame, filename:str='cancer_model.pkl'):
     model = CancerModel()
     filename = os.path.join(MODELS_DIR, filename)
     X = train_data.drop('target', axis=1)
