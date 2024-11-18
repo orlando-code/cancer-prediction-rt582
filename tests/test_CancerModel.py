@@ -5,7 +5,7 @@ https://docs.science.ai.cam.ac.uk/packaging-publishing/4_Testing/
 
 import unittest
 
-from cancer_prediction.cancer_model import CancerModel  # what is the dot doing?
+from cancer_prediction.cancer_model import CancerModel
 
 # class TestCancerModel(unittest.TestCase):
 
