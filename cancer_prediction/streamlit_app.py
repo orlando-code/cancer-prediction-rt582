@@ -38,7 +38,9 @@ def load_model(path: str = "cancer_model.pkl") -> CancerModel:
     return model
 
 
-def train_and_save_model(train_data: pd.DataFrame, filename: str = "cancer_model.pkl") -> CancerModel:
+def train_and_save_model(
+    train_data: pd.DataFrame, filename: str = "cancer_model.pkl"
+) -> CancerModel:
     """
     Train a model on the given data and save it to the given filename.
 
@@ -64,18 +66,29 @@ st.title("Cancer Diagnosis Prediction")
 
 # Sidebar for navigation
 app_mode = st.sidebar.selectbox(
-    "Choose an option", ["Home", "Train a new model", "Load model and predict", "Manual data entry for prediction"]
+    "Choose an option",
+    [
+        "Home",
+        "Train a new model",
+        "Load model and predict",
+        "Manual data entry for prediction",
+    ],
 )
 
 if app_mode == "Home":
     st.write(
-        "Welcome to the Cancer Diagnosis Prediction Application. Use the sidebar to navigate through the application."
+        """Welcome to the Cancer Diagnosis Prediction Application.
+        Use the sidebar to navigate through the application."""
     )
 
 elif app_mode == "Train a new model":
     st.header("Train a new model")
-    uploaded_file = st.file_uploader("Upload your dataset (CSV format)", type="csv")
-    model_name = st.text_input("Enter a name for your model (without extension)", value="cancer_model")
+    uploaded_file = st.file_uploader(
+        "Upload your dataset (CSV format)", type="csv"
+    )
+    model_name = st.text_input(
+        "Enter a name for your model (without extension)", value="cancer_model"
+    )
 
     if uploaded_file is not None and model_name:
         data = pd.read_csv(uploaded_file)
@@ -87,7 +100,10 @@ elif app_mode == "Train a new model":
             st.success(f'Model "{model_name}" trained and saved successfully.')
 
 
-if app_mode == "Load model and predict" or app_mode == "Manual data entry for prediction":
+if (
+    app_mode == "Load model and predict"
+    or app_mode == "Manual data entry for prediction"
+):
     st.header("Select a model for prediction")
     model_files = list_saved_models(MODELS_DIR)
     selected_model_file = st.selectbox("Select a model file", model_files)
@@ -95,10 +111,14 @@ if app_mode == "Load model and predict" or app_mode == "Manual data entry for pr
     model = load_model(path)
 
     if app_mode == "Load model and predict":
-        uploaded_file = st.file_uploader("Upload your dataset for prediction (CSV format)", type="csv")
+        uploaded_file = st.file_uploader(
+            "Upload your dataset for prediction (CSV format)", type="csv"
+        )
         if uploaded_file is not None:
             test_data = pd.read_csv(uploaded_file)
-            predictions, accuracy = model.predict(test_data.drop("target", axis=1)), model.accuracy(
+            predictions, accuracy = model.predict(
+                test_data.drop("target", axis=1)
+            ), model.accuracy(
                 test_data.drop("target", axis=1), test_data["target"]
             )
             st.write("Predictions:", predictions)
@@ -115,7 +135,9 @@ if app_mode == "Load model and predict" or app_mode == "Manual data entry for pr
         # Dynamically generate input fields for each feature
         for feature in feature_names:
 
-            input_data[feature] = st.number_input(f"Enter {feature}:", step=0.01)
+            input_data[feature] = st.number_input(
+                f"Enter {feature}:", step=0.01
+            )
 
         if st.button("Predict"):
             # Prepare the data for prediction and predict
@@ -123,4 +145,7 @@ if app_mode == "Load model and predict" or app_mode == "Manual data entry for pr
             prediction = model.predict(input_df)
 
             # Display the prediction result
-            st.write(f"Prediction: {prediction[0][0]} with confidence: {prediction[0][1]}")
+            st.write(
+                f"Prediction: {prediction[0][0]} with confidence: \
+                {prediction[0][1]}"
+            )

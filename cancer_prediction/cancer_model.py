@@ -24,18 +24,31 @@ class CancerModel:
     def __str__(self) -> str:
         return "CancerModel"
 
-    def fit(self, X: np.ndarray | pd.DataFrame, y: np.ndarray | pd.DataFrame) -> None:
+    def fit(
+        self, X: np.ndarray | pd.DataFrame, y: np.ndarray | pd.DataFrame
+    ) -> None:
         """Fit the model to the given data.
 
         Args:
             X (np.ndarray | pd.DataFrame): The features
             y (np.ndarray | pd.DataFrame): The diagnosis target
         """
-        pipe = Pipeline([("scaler", StandardScaler()), ("pca", PCA()), ("model", LogisticRegression())])
+        pipe = Pipeline(
+            [
+                ("scaler", StandardScaler()),
+                ("pca", PCA()),
+                ("model", LogisticRegression()),
+            ]
+        )
 
-        param_grid = {"pca__n_components": np.arange(1, 31), "model__C": np.logspace(-3, 1, 100)}
+        param_grid = {
+            "pca__n_components": np.arange(1, 31),
+            "model__C": np.logspace(-3, 1, 100),
+        }
 
-        grid = GridSearchCV(pipe, param_grid, cv=5, n_jobs=-1, scoring="accuracy", verbose=1)
+        grid = GridSearchCV(
+            pipe, param_grid, cv=5, n_jobs=-1, scoring="accuracy", verbose=1
+        )
         grid.fit(X, y)
 
         self.model = grid.best_estimator_
@@ -95,7 +108,8 @@ class CancerModel:
             X (np.ndarray | pd.DataFrame): The features
 
         Returns:
-            list[tuple[str, float]]: A list of tuples containing the diagnosis and the confidence
+            list[tuple[str, float]]: A list of tuples containing the diagnosis
+            and the confidence
         """
         predictions = self.model.predict(X)
         diagnoses = [self.target_to_diagnosis(p) for p in predictions]
@@ -120,7 +134,9 @@ class CancerModel:
         """
         return self.model.predict_proba(X)
 
-    def accuracy(self, X: np.ndarray | pd.DataFrame, y: np.ndarray | pd.DataFrame) -> float:
+    def accuracy(
+        self, X: np.ndarray | pd.DataFrame, y: np.ndarray | pd.DataFrame
+    ) -> float:
         """Calculate the accuracy of the model on the given data.
 
         Args:
@@ -142,7 +158,9 @@ class CancerModel:
         feature_importance = self.get_feature_importance()
         feature_variance = self.get_feature_variance()
 
-        feature_importance_df = pd.DataFrame(feature_importance, columns=self.feature_names)
+        feature_importance_df = pd.DataFrame(
+            feature_importance, columns=self.feature_names
+        )
         feature_importance_df["variance"] = feature_variance
         return feature_importance_df
 
